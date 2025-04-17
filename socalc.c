@@ -636,7 +636,7 @@ Usage: socalc [options...]                                                     \
                                                                                \n\
   <type>:   [drugs|effects|mixins]                                             \n\
   <drug>:   [og_kush|sour_diesel|...(names listed on -l drugs)...]             \n\
-  <mixins>: Space seporated list of mixins name (names listed on -l mixins).   \n\
+  <mixins>: Space separated list of mixins name (names listed on -l mixins).   \n\
   <max>:    Max number of mixins to brute-force with, must be bigger than 0.   \n";
 
 void handle_list_arg(int argc, char **argv)

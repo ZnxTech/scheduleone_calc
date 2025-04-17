@@ -10,5 +10,5 @@ Usage: socalc [options...]
 
   <type>:   [drugs|effects|mixins]
   <drug>:   [og_kush|sour_diesel|...(names listed on -l drugs)...]
-  <mixins>: Space seporated list of mixins name (names listed on -l mixins).
+  <mixins>: Space separated list of mixins name (names listed on -l mixins).
   <max>:    Max number of mixins to brute-force with, must be bigger than 0.
