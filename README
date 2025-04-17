@@ -1,0 +1,14 @@
+The Schedule-I Drug Mix Calculator.
+Usage: socalc [options...]
+
+  -h, --help                   Prints this help message.
+  -l, --list <type>            Prints a list of all <type>.
+  -b, --brute <drug> <max=4>   Brute-force the best profit mix for <drug>.
+  -a, --brute-all <max=4>      Brute-force the best profit mix for all drugs.
+  -r, --recipe <drug> <mixins> Calculates the resulting drug from <drug> and a-
+                               list of <mixins>.
+
+  <type>:   [drugs|effects|mixins]
+  <drug>:   [og_kush|sour_diesel|...(names listed on -l drugs)...]
+  <mixins>: Space seporated list of mixins name (names listed on -l mixins).
+  <max>:    Max number of mixins to brute-force with, must be bigger than 0.
