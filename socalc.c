@@ -512,6 +512,9 @@ void print_drug_cost(struct drug drug)
 #define MAX_RECIPE_LEN 80
 void print_drug_recipe(struct drug drug)
 {
+    if (drug.mixins == NULL)
+        return;
+
     printf("| Recipe:\n");
     printf("| ");
 
