@@ -372,16 +372,14 @@ float drug_calc_multiplier(struct drug drug)
     return multiplier;
 }
 
-uint32_t drug_calc_value(struct drug drug)
+uint32_t drug_calc_value(struct drug drug, float multiplier)
 {
-    uint32_t value = drug.value;
-    float multiplier = drug_calc_multiplier(drug);
-    return (uint32_t)(value * multiplier);
+    return (uint32_t)(drug.value * multiplier);
 }
 
-int32_t drug_calc_profit(struct drug drug)
+int32_t drug_calc_profit(struct drug drug, float multiplier)
 {
-    return (int32_t)drug_calc_value(drug) - (int32_t)drug.cost;
+    return (int32_t)drug_calc_value(drug, multiplier) - (int32_t)drug.cost;
 }
 
 inline bool drug_can_apply_conv(struct drug *drug, struct conversion conv,
@@ -424,6 +422,7 @@ void drug_apply_mixin(struct drug *drug, struct mixin mixin)
 struct recorder {
     bool has_drug[DRUG_COUNT];
     struct drug best_drugs[DRUG_COUNT];
+    int32_t best_profit[DRUG_COUNT];
 };
 
 /** 
@@ -434,19 +433,24 @@ struct recorder RECORDER = { 0 };
 
 void drug_record(struct drug drug, uint32_t drug_id)
 {
-    int32_t cont_profit = drug_calc_profit(drug);
-    int32_t best_profit = (RECORDER.has_drug[drug_id]) 
-        ? drug_calc_profit(RECORDER.best_drugs[drug_id])
-        : 0;
+    float cont_multiplier = drug_calc_multiplier(drug);
+    int32_t cont_profit = drug_calc_profit(drug, cont_multiplier);
 
-    if (best_profit < cont_profit) {
+    if (!RECORDER.has_drug[drug_id]) {
+        struct drug init_drug = drug;
+        init_drug.mixins = mixin_darray_clone(drug.mixins);
+        RECORDER.best_profit[drug_id] = cont_profit;
+        RECORDER.best_drugs[drug_id] = init_drug;
+        RECORDER.has_drug[drug_id] = true;
+        return;
+    }
+
+    if (RECORDER.best_profit[drug_id] < cont_profit) {
         struct drug best_drug = drug;
         best_drug.mixins = mixin_darray_clone(drug.mixins);
-        if (RECORDER.has_drug[drug_id])
-            mixin_darray_free(RECORDER.best_drugs[drug_id].mixins);
-
+        mixin_darray_free(RECORDER.best_drugs[drug_id].mixins);
+        RECORDER.best_profit[drug_id] = cont_profit;
         RECORDER.best_drugs[drug_id] = best_drug;
-        RECORDER.has_drug[drug_id] = true;
     }
 }
 
@@ -500,8 +504,9 @@ void print_drug_effects(struct drug drug)
 
 void print_drug_multiplier(struct drug drug)
 {
-    printf("| Multiplier: x%.2f\n", drug_calc_multiplier(drug));
-    printf("| Final value: $%u\n", drug_calc_value(drug));
+    float multiplier = drug_calc_multiplier(drug);
+    printf("| Multiplier: x%.2f\n", multiplier);
+    printf("| Final value: $%u\n", drug_calc_value(drug, multiplier));
 }
 
 void print_drug_cost(struct drug drug)
