@@ -706,6 +706,7 @@ void handle_brute_arg(int argc, char **argv)
         return;
     }
 
+    printf("Brute-forcing %s...\n", DRUGS[drug_id].name);
     drug_brute((uint32_t)mixin_depth, drug_id);
 }
 
@@ -724,6 +725,7 @@ void handle_brute_all_arg(int argc, char **argv)
         return;
     }
 
+    printf("Brute-forcing all drugs...\n");
     drug_brute_all((uint32_t)mixin_depth);
 }
 
