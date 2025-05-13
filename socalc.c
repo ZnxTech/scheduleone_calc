@@ -390,6 +390,15 @@ inline bool drug_can_apply_conv(struct drug *drug, struct conversion conv,
         || EFFECT_HAS(del_mask, conv.effect_to));
 }
 
+uint32_t drug_get_effect_number(struct drug *drug)
+{
+    uint32_t effect_number = 0;
+    for (uint32_t i = 0; i < EFFECT_COUNT; i++) {
+        effect_number += (drug->effects & EFFECT_MASK(i)) != 0;
+    }
+    return effect_number;
+}
+
 void drug_apply_mixin(struct drug *drug, struct mixin mixin)
 {
     if (drug->mixins == NULL)
@@ -410,8 +419,10 @@ void drug_apply_mixin(struct drug *drug, struct mixin mixin)
     drug->effects |= add_mask;
 
     /* add the mixin's main effect. */
-    drug->effects |= EFFECT_MASK(mixin.effect);
-    drug->cost += mixin.cost;
+    if (drug_get_effect_number(drug) < 8) {
+        drug->effects |= EFFECT_MASK(mixin.effect);
+        drug->cost += mixin.cost;
+    }
     mixin_darray_append(drug->mixins, mixin);
 }
 
